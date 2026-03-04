@@ -21,7 +21,7 @@ Building multi-agent AI systems? You've probably faced these nightmares:
 
 - **$500 API Bills**: Agent A calls Agent B, which calls Agent A again... infinite loops that drain your wallet
 - **Priority Chaos**: Your "Boss Agent" gets stuck behind hundreds of low-priority logging tasks
-- **Debugging Hell**: Which agent started the loop? Who's spamming the system? Good luck finding out
+- **Debugging Mess**: Which agent started the loop? Who's spamming the system? Good luck finding out
 
 ## 🚀 The Solution
 
